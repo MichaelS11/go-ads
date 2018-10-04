@@ -11,7 +11,7 @@ import (
 )
 
 // NewADS to create a new ADS struct.
-// sensorType is not use at this time, it is for possable future use
+// sensorType is not use at this time, it is for possible future use
 func NewADS(busName string, address uint16, sensorType string) (*ADS, error) {
 	busCloser, err := i2creg.Open(busName)
 	if err != nil {
