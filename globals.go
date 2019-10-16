@@ -7,6 +7,8 @@ import (
 // https://cdn-shop.adafruit.com/datasheets/ads1115.pdf
 
 type (
+	// ConfigInputMultiplexer config input multiplexer
+	ConfigInputMultiplexer uint16
 	// ConfigGain config gain amplifier
 	ConfigGain uint16
 	// ConfigDataRate config data rate
@@ -19,14 +21,23 @@ const (
 	configOperationSingle uint16 = 0x8000 // 1 : Begin a single conversion (when in power-down mode)
 
 	// Bits [14:12] MUX[2:0]: Input multiplexer configuration (ADS1115 only)
-	configInputMultiplexerDifferential01 uint16 = 0x0000 // 000 : AINP = AIN0 and AINN = AIN1 (default)
-	configInputMultiplexerDifferential03 uint16 = 0x1000 // 001 : AINP = AIN0 and AINN = AIN3
-	configInputMultiplexerDifferential13 uint16 = 0x2000 // 010 : AINP = AIN1 and AINN = AIN3
-	configInputMultiplexerDifferential23 uint16 = 0x3000 // 011 : AINP = AIN2 and AINN = AIN3
-	configInputMultiplexerSingle0        uint16 = 0x4000 // 100 : AINP = AIN0 and AINN = GND
-	configInputMultiplexerSingle1        uint16 = 0x5000 // 101 : AINP = AIN1 and AINN = GND
-	configInputMultiplexerSingle2        uint16 = 0x6000 // 110 : AINP = AIN2 and AINN = GND
-	configInputMultiplexerSingle3        uint16 = 0x7000 // 111 : AINP = AIN3 and AINN = GND
+
+	// ConfigInputMultiplexerDifferential01 000 : AINP = AIN0 and AINN = AIN1 (default)
+	ConfigInputMultiplexerDifferential01 ConfigInputMultiplexer = 0x0000
+	// ConfigInputMultiplexerDifferential03 001 : AINP = AIN0 and AINN = AIN3
+	ConfigInputMultiplexerDifferential03 ConfigInputMultiplexer = 0x1000
+	// ConfigInputMultiplexerDifferential13 010 : AINP = AIN1 and AINN = AIN3
+	ConfigInputMultiplexerDifferential13 ConfigInputMultiplexer = 0x2000
+	// ConfigInputMultiplexerDifferential23 011 : AINP = AIN2 and AINN = AIN3
+	ConfigInputMultiplexerDifferential23 ConfigInputMultiplexer = 0x3000
+	// ConfigInputMultiplexerSingle0 100 : AINP = AIN0 and AINN = GND
+	ConfigInputMultiplexerSingle0 ConfigInputMultiplexer = 0x4000
+	// ConfigInputMultiplexerSingle1 101 : AINP = AIN1 and AINN = GND
+	ConfigInputMultiplexerSingle1 ConfigInputMultiplexer = 0x5000
+	// ConfigInputMultiplexerSingle2 110 : AINP = AIN2 and AINN = GND
+	ConfigInputMultiplexerSingle2 ConfigInputMultiplexer = 0x6000
+	// ConfigInputMultiplexerSingle3 111 : AINP = AIN3 and AINN = GND
+	ConfigInputMultiplexerSingle3 ConfigInputMultiplexer = 0x7000
 
 	// Bits [11:9] PGA[2:0]: Programmable gain amplifier configuration (ADS1114 and ADS1115 only)
 
@@ -89,7 +100,7 @@ const (
 	registerPointerConfig     byte = 0x0001
 
 	// configDefault is the default config
-	configDefault = configOperationSingle | configInputMultiplexerSingle0 | // missing ConfigGain
+	configDefault = configOperationSingle | // missing ConfigInputMultiplexer and ConfigGain
 		configOperatingModeSingle | // missing ConfigDataRate
 		configComparatorModeTraditional | configComparatorPolarityLow | configLatchingComparatorOff | configComparatorQueueOff
 )
@@ -97,11 +108,12 @@ const (
 // ADS struct to interface with the Analog-to-Digital Converter.
 // Call NewADS to create a new one.
 type ADS struct {
-	busCloser      *i2c.BusCloser
-	dev            *i2c.Dev
-	configGain     uint16
-	configDataRate uint16
-	config         []byte
-	write          []byte
-	read           []byte
+	busCloser              *i2c.BusCloser
+	dev                    *i2c.Dev
+	configInputMultiplexer uint16
+	configGain             uint16
+	configDataRate         uint16
+	config                 []byte
+	write                  []byte
+	read                   []byte
 }
